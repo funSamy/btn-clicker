@@ -1,0 +1,8 @@
+# Compiled python files
+*.pyc
+__pycache__/
+
+.env
+devserver.sh
+.venv
+.idx
