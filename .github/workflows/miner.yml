@@ -12,13 +12,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Setup venv
-        uses: getsentry/action-setup-venv@v2.1.0
-        id: venv-setup
-        with:
-          python-version: 3.11.8
-          cache-dependency-path: requirements.txt
-          install-cmd: pip install -r requirements.txt
-      - name: Run script
+      - name: write the content of .env file
         run: |
-          python main.py
+          echo APP_ID=${{ secrets.APP_ID }} > .env
+          echo APP_HASH=${{ secrets.APP_HASH }} >> .env
+          echo BOT_TOKEN=${{ secrets.BOT_TOKEN }} >> .env
+          echo PHONE_NUMBER=${{ secrets.PHONE_NUMBER }} >> .env
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11.8'
+          cache: 'pip' # caching pip dependencies
+      - name: Setup venv
+        run: |
+          python -m venv .venv && 
+          source .venv/bin/activate
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run script
+        run: python main.py
