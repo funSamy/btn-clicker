@@ -1,3 +1,4 @@
 pip
 autopep8
+dotenv
 telethon==1.36.0
