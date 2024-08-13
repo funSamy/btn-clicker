@@ -15,6 +15,7 @@ async def click_button(bot_name, current_amount=0):
                         for button in row:
                             # print(button.text)
                             if button.text == '⛏ Clic':  # Check for the button text
+                                start = time.time()
                                 while current_amount <= 1200:
                                     try:
                                         await button.click()
@@ -22,22 +23,14 @@ async def click_button(bot_name, current_amount=0):
                                         print(
                                             f"Clicked button! Current amount: {current_amount}")
 
-                                    # async for new_message in client.iter_messages(dialog, limit=1):
-                                    #     # print(new_message)
-                                    #     print(new_message.message)
-                                        # if "+1⛏" in new_message.message:
-                                        #     print("Detected +1⛏ notification!")
-                                        #     break  # Exit the loop when notification is found
                                     
-                                    # while True:
-                                    #     async for new_message in client.iter_messages(dialog, limit=1):
-                                    #         if "+1⛏" in new_message.message:
-                                    #             print("Detected +1⛏ notification!")
-                                    #             break  # Exit the loop when notification is found
-                                    #     time.sleep(0.5) 
                                     except Exception as e:
                                         print(f"Error clicking button: {e}")
                                     time.sleep(1.5)
+                                if current_amount >= 1200:
+                                    print(f'Target amount reached: {current_amount}\n')
+                                    print(f'Completed in {time.strftime("%H:%M:%S", time.gmtime(time.time() - start))}')
+                                    exit(0)
 
                             else:
                                 print("Button text not found")

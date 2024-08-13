@@ -1,4 +1,4 @@
 pip
 autopep8
-dotenv
+python-dotenv==1.0.1
 telethon==1.36.0
