@@ -33,8 +33,9 @@ jobs:
         run: |
           echo APP_ID=${{ secrets.APP_ID }} >> .env
           echo APP_HASH=${{ secrets.APP_HASH }} >> .env
-          echo BOT_TOKEN=${{ secrets.BOT_TOKEN }} >> .env
           echo PHONE_NUMBER=${{ secrets.PHONE_NUMBER }} >> .env
+          echo BOT_TOKEN=${{ secrets.BOT_TOKEN }} >> .env
+          echo 
       - name: Debug .env
         run: cat .env
       - name: Run script
