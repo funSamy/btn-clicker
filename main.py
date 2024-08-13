@@ -72,6 +72,7 @@ if __name__ == "__main__":
     current_amount = 0
 
     client = TelegramClient('my_session', api_id, api_hash)
+    print(f'Phone number: {phone_number}')
     client.start(phone=phone_number)
     with client:
         client.loop.run_until_complete(main(bot_name='Мinеr Bоt🌍', current_amount=current_amount, target_amount=target_amount))
