@@ -36,7 +36,14 @@ jobs:
           echo PHONE_NUMBER=${{ secrets.PHONE_NUMBER }} >> .env
           echo BOT_TOKEN=${{ secrets.BOT_TOKEN }} >> .env
           echo 
-      - name: Debug .env
-        run: cat .env
       - name: Run script
         run: python main.py
+      - name: Commit changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add .
+          git commit -m "Commiting changes after run ${{ github.run_number }}"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN}}
