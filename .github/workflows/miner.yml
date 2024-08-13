@@ -2,7 +2,7 @@ name: Build and Start clicking
 
 on: 
   schedule:
-    - cron: '20 0 * * *'
+    - cron: '20 23 * * *'
   workflow_dispatch:
 
 permissions:
@@ -25,7 +25,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11.8'
-          cache: 'pipenv' # caching pip dependencies in virtual environment 
+          cache: 'pip'
       - name: Setup venv
         run: |
           python -m venv .venv
