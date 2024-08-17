@@ -13,44 +13,37 @@ async def click_button(bot_name, current_amount=0):
                 if message.buttons:
                     for row in message.buttons:
                         for button in row:
-                            # print(button.text)
-                            if button.text == '⛏ Clic':  # Check for the button text
+                            if button.text == '⛏ Clic':
                                 start = time.time()
-                                while current_amount <= 1200:
+                                max_amount = 1200
+                                while current_amount <= max_amount:
                                     try:
                                         await button.click()
-                                        current_amount += 1
                                         print(
                                             f"Clicked button! Current amount: {current_amount}")
-
-                                    
+                                        
                                     except Exception as e:
                                         print(f"Error clicking button: {e}")
                                     time.sleep(1.5)
+                                    message = await client.get_messages(dialog, ids=message.id)
+                                    text = str(message.text).split('\n')[0]
+                                    text = text.split(' ')[-1]
+                                    current_amount = int(text.split('/')[0])
+                                    max_amount = int(text.split('/')[1])
                                 if current_amount >= 1200:
-                                    print(f'Target amount reached: {current_amount}\n')
+                                    print(f'Target amount reached: {current_amount}/{max_amount}\n')
                                     print(f'Completed in {time.strftime("%H:%M:%S", time.gmtime(time.time() - start))}')
                                     exit(0)
+                                    return True
 
                             else:
                                 print("Button text not found")
 
 
 async def main(bot_name: str, current_amount=0, target_amount=1200):
-    while current_amount < target_amount:
-        start_time = time.time()
-        clicks_in_minute = 0
-        while clicks_in_minute < 40 and current_amount <= target_amount:
-            await click_button(bot_name, current_amount=current_amount)
-            clicks_in_minute += 1
-            # Adjust this if needed to click about 40 times per minute
-            time.sleep(1.5)
-        print("Pausing for 30 seconds...")
-        time.sleep(30)
-        elapsed_time = time.time() - start_time
-        print(f"Minute elapsed (actual: {elapsed_time:.2f} seconds)")
-
-    print(f"Target amount reached: {current_amount}")
+    out = await click_button(bot_name, current_amount=current_amount)
+    print(f"Target amount reached")
+    exit(0 if out else 1)
 
 if __name__ == "__main__":
     if load_dotenv():
