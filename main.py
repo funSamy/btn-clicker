@@ -15,22 +15,26 @@ async def click_button(bot_name, current_amount=0):
                         for button in row:
                             if button.text == '⛏ Clic':
                                 start = time.time()
-                                max_amount = 1200
-                                while current_amount <= max_amount:
+                                # max_amount = 1200
+                                message = await client.get_messages(dialog, ids=message.id)
+                                text = str(message.text).split('\n')[0]
+                                text = text.split(' ')[-1]
+                                current_amount = int(text.split('/')[0])
+                                max_amount = int(text.split('/')[1])
+                                while current_amount < max_amount:
                                     try:
                                         await button.click()
                                         print(
                                             f"Clicked button! Current amount: {current_amount}")
+                                        message = await client.get_messages(dialog, ids=message.id)
+                                        text = str(message.text).split('\n')[0]
+                                        text = text.split(' ')[-1]
+                                        current_amount = int(text.split('/')[0])
                                         
                                     except Exception as e:
                                         print(f"Error clicking button: {e}")
-                                    time.sleep(1.5)
-                                    message = await client.get_messages(dialog, ids=message.id)
-                                    text = str(message.text).split('\n')[0]
-                                    text = text.split(' ')[-1]
-                                    current_amount = int(text.split('/')[0])
-                                    max_amount = int(text.split('/')[1])
-                                if current_amount >= 1200:
+                                    time.sleep(0.5)
+                                if current_amount == max_amount:
                                     print(f'Target amount reached: {current_amount}/{max_amount}\n')
                                     print(f'Completed in {time.strftime("%H:%M:%S", time.gmtime(time.time() - start))}')
                                     exit(0)
