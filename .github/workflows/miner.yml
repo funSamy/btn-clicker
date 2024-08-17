@@ -12,7 +12,7 @@ jobs:
   build:
     name: Build and Start clicking
     runs-on: ubuntu-latest
-    if: ${{ github.triggering_actor == github.repository_owner && github.ref_name == 'main' }}
+    if: ${{ github.event_name == 'workflow_dispatch' && github.triggering_actor == github.repository_owner && github.ref_name == 'main' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
