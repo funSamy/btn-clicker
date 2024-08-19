@@ -45,21 +45,18 @@ async def start_conversation(dialog):
         async with client.conversation(dialog, timeout=timeout) as conv:
             await conv.send_message('/start')
             response = await conv.get_response()
-            print(response, '\n')
 
             mining_button = find_button(response, MINING_BUTTON_TEXT)
             if mining_button:
                 random_sleep()
                 await mining_button.click()
                 response = await conv.get_response()
-                print(response, '\n')
 
                 click_button = find_button(response, CLICK_BUTTON_TEXT)
                 if click_button:
                     random_sleep()
                     await click_button.click()
                     response = await conv.get_response()
-                    print(response, '\n')
                     random_sleep()
                     return True
                 else:
