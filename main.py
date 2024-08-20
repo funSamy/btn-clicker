@@ -2,6 +2,7 @@ from telethon import TelegramClient, Button
 import time
 from dotenv import load_dotenv
 import os
+import re
 import random
 
 # Constants for button texts
@@ -58,16 +59,29 @@ async def start_conversation(dialog):
                     await click_button.click()
                     response = await conv.get_response()
                     random_sleep()
-                    return True
+                    return response
                 else:
                     print(f"'{CLICK_BUTTON_TEXT}' button not found")
             else:
                 print(f"'{MINING_BUTTON_TEXT}' button not found")
-            return False
+            return None
 
     except TimeoutError:
         print("Could not get the Bot response")
-        return False
+        return None
+
+
+def extract_amounts(text: str):
+    """Extracts the current and maximum amounts from the given text."""
+    pattern = r"(\d+)/(\d+)"
+    current_amount, max_amount = None, None
+
+    # Find the first match
+    match = re.search(pattern, text)
+    if match:
+        current_amount = int(match.group(1))
+        max_amount = int(match.group(2))
+    return current_amount, max_amount
 
 
 async def click_mining_button(bot_name, target_amount=1200):
@@ -77,21 +91,24 @@ async def click_mining_button(bot_name, target_amount=1200):
             print(f"Found bot: {dialog.name}")
             print("Chat history cleared." if await clear_chat_history(dialog) else "Chat history is already empty.")
 
-            if not await start_conversation(dialog):
+            response = await start_conversation(dialog)
+            if response is None:
                 print("Could not start conversation with the bot")
                 return
 
+            current_amount, max_amount = extract_amounts(str(response.message))
             random_sleep()
             print("Conversation started with the bot")
+
+            # Check if the target is already reached
+            if current_amount >= target_amount:
+                print(f'Target amount already reached: {current_amount}/{max_amount}')
+                return
 
             async for message in client.iter_messages(dialog):
                 if message.buttons:
                     button = find_button(message, CLICK_BUTTON_TEXT)
                     if button:
-                        start_time = time.time()
-                        current_amount = 0
-                        max_amount = target_amount  # Initialize max_amount
-
                         while current_amount < max_amount:
                             try:
                                 await button.click()
@@ -100,10 +117,8 @@ async def click_mining_button(bot_name, target_amount=1200):
 
                                 # Update current_amount and max_amount from message text
                                 message = await client.get_messages(dialog, ids=message.id)
-                                text = str(message.text).split('\n')[0]
-                                text = text.split(' ')[-1]
-                                current_amount = int(text.split('/')[0])
-                                max_amount = int(text.split('/')[1])
+                                current_amount, max_amount = extract_amounts(
+                                    str(message.text))
 
                             except Exception as e:
                                 print(f"Error clicking button: {e}")
@@ -112,8 +127,6 @@ async def click_mining_button(bot_name, target_amount=1200):
                         if current_amount >= max_amount:  # Use >= to handle potential overshooting
                             print(
                                 f'Target amount reached: {current_amount}/{max_amount}\n')
-                            print(
-                                f'Completed in {time.strftime("%H:%M:%S", time.gmtime(time.time() - start_time))}')
                             return
 
                     else:
@@ -122,8 +135,12 @@ async def click_mining_button(bot_name, target_amount=1200):
 
 
 async def main(bot_name: str, target_amount=1200):
+    """Main function to start the mining process."""
+    start_time = time.time()
     await click_mining_button(bot_name, target_amount=target_amount)
     print(f"Target amount reached")
+    print(
+        f'Completed in {time.strftime("%H:%M:%S", time.gmtime(time.time() - start_time))}')
 
 if __name__ == "__main__":
     if load_dotenv():
