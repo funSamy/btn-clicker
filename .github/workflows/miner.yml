@@ -2,7 +2,8 @@ name: Build and Start clicking
 
 on: 
   schedule:
-    - cron: '10 0 * * *'
+    - cron: '10 0 * * *' # Runs at 00:10 (UTC time)
+    - cron: '40 5 * * *' # Runs at 05:40 (UTC time)
   workflow_dispatch:
 
 permissions:
