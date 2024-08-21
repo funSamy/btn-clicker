@@ -96,7 +96,9 @@ async def click_mining_button(bot_name, target_amount=1200):
                 print("Could not start conversation with the bot")
                 return
 
-            current_amount, max_amount = extract_amounts(str(response.message))
+            # current_amount, max_amount = extract_amounts(str(response.message))
+            current_amount = 0
+            max_amount = target_amount
             random_sleep()
             print("Conversation started with the bot")
 
