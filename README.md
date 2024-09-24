@@ -1,1 +1,1 @@
-![Build and run action](https://github.com/Joy-sameza/bot-button-clicker/actions/workflows/miner.yml/badge.svg)
+![Build and run action](https://github.com/funSamy/btn-clicker/actions/workflows/miner.yml/badge.svg)
